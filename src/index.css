@@ -1,0 +1,204 @@
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@theme {
+  /* Soft Organic — warm earth-tone palette (Legacy HSL Syntax for PDF Compatibility) */
+  --color-background: hsl(35, 25%, 96%);
+  --color-foreground: hsl(25, 20%, 20%);
+
+  --color-card: hsl(30, 30%, 99%);
+  --color-card-foreground: hsl(25, 20%, 20%);
+
+  --color-popover: hsl(30, 30%, 99%);
+  --color-popover-foreground: hsl(25, 20%, 20%);
+
+  --color-primary: hsl(155, 35%, 38%);
+  --color-primary-foreground: hsl(40, 30%, 97%);
+
+  --color-secondary: hsl(32, 30%, 92%);
+  --color-secondary-foreground: hsl(25, 20%, 25%);
+
+  --color-muted: hsl(35, 20%, 93%);
+  --color-muted-foreground: hsl(25, 12%, 50%);
+
+  --color-accent: hsl(28, 50%, 90%);
+  --color-accent-foreground: hsl(25, 25%, 22%);
+
+  --color-destructive: hsl(4, 60%, 55%);
+  --color-destructive-foreground: hsl(0, 0%, 100%);
+
+  --color-border: hsl(30, 18%, 86%);
+  --color-input: hsl(30, 18%, 86%);
+  --color-ring: hsl(155, 35%, 38%);
+
+  /* Kinetic Calendar — Material Design 3 / Kinetic palette */
+  --color-k-primary: #3751c1;
+  --color-k-on-primary: #f2f1ff;
+  --color-k-primary-container: #859aff;
+  --color-k-on-primary-container: #001868;
+  
+  --color-k-secondary: #b71029;
+  --color-k-on-secondary: #ffefee;
+  --color-k-secondary-container: #ffc3c1;
+  --color-k-on-secondary-container: #94001d;
+  
+  --color-k-tertiary: #745700;
+  --color-k-on-tertiary: #fff1da;
+  --color-k-tertiary-container: #f9cc61;
+  --color-k-on-tertiary-container: #5b4400;
+  
+  --color-k-error: #b41340;
+  --color-k-on-error: #ffefef;
+  
+  --color-k-surface: #f5f6f7;
+  --color-k-on-surface: #2c2f30;
+  --color-k-surface-variant: #dadddf;
+  --color-k-on-surface-variant: #595c5d;
+  --color-k-outline: #757778;
+  --color-k-outline-variant: #abadae;
+  
+  --color-k-surface-container-lowest: #ffffff;
+  --color-k-surface-container-low: #eff1f2;
+  --color-k-surface-container: #e6e8ea;
+  --color-k-surface-container-high: #e0e3e4;
+  --color-k-surface-container-highest: #dadddf;
+
+  /* Typography families */
+  --font-headline: "Space Grotesk", sans-serif;
+  --font-body: "Manrope", sans-serif;
+  --font-label: "Space Grotesk", sans-serif;
+
+  /* Animations for Kinetic */
+  @keyframes k-kinetic-bg {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  --animate-k-bg: k-kinetic-bg 15s ease infinite;
+
+  /* Radius */
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+
+  /* Floor colors — Legacy Syntax */
+  --color-floor-1-bg: hsl(205, 45%, 93%);
+  --color-floor-1-text: hsl(205, 45%, 28%);
+  --color-floor-1-border: hsl(205, 35%, 78%);
+  --color-floor-1-accent: hsl(205, 50%, 48%);
+
+  --color-floor-2-bg: hsl(8, 45%, 94%);
+  --color-floor-2-text: hsl(8, 40%, 35%);
+  --color-floor-2-border: hsl(8, 35%, 82%);
+  --color-floor-2-accent: hsl(8, 50%, 52%);
+
+  --color-floor-3-bg: hsl(38, 50%, 93%);
+  --color-floor-3-text: hsl(38, 45%, 30%);
+  --color-floor-3-border: hsl(38, 35%, 78%);
+  --color-floor-3-accent: hsl(38, 60%, 50%);
+
+  /* Score colors — Legacy Syntax */
+  --color-score-high-bg: hsl(145, 30%, 92%);
+  --color-score-high-text: hsl(145, 35%, 30%);
+  --color-score-high-border: hsl(145, 25%, 76%);
+
+  --color-score-mid-bg: hsl(38, 40%, 93%);
+  --color-score-mid-text: hsl(38, 35%, 30%);
+  --color-score-mid-border: hsl(38, 30%, 78%);
+
+  --color-score-low-bg: hsl(8, 40%, 94%);
+  --color-score-low-text: hsl(8, 35%, 35%);
+  --color-score-low-border: hsl(8, 30%, 82%);
+
+  /* Shadows — Adjusted for older browsers/PDF engines */
+  --shadow-warm: 0 2px 12px -2px rgba(127, 85, 51, 0.1), 0 1px 3px rgba(102, 68, 40, 0.08);
+  --shadow-warm-lg: 0 8px 30px -6px rgba(127, 85, 51, 0.15), 0 2px 8px rgba(102, 68, 40, 0.1);
+
+  /* Animations */
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+    20%, 40%, 60%, 80% { transform: translateX(2px); }
+  }
+  /* PDF Safe Colors (HSL for manual bypass of oklch) */
+  --pdf-primary: 229, 56%, 48%; /* #3751c1 */
+  --pdf-manana-bg: 50, 94%, 62%; /* #fae047 */
+  --pdf-manana-text: 43, 71%, 26%; /* #713f12 */
+  --pdf-tarde-bg: 271, 91%, 65%; /* #a855f7 */
+  --pdf-intermedio-bg: 24, 95%, 53%; /* #f97316 */
+  
+  --pdf-apertura-bg: 141, 79%, 73%; /* #86efac */
+  --pdf-apertura-text: 140, 61%, 20%; /* #14532d */
+  --pdf-interna-bg: 200, 93%, 73%; /* #7dd3fc */
+  --pdf-interna-text: 198, 83%, 20%; /* #0c4a6e */
+  --pdf-general-bg: 201, 95%, 21%; /* #0369a1 */
+  
+  --pdf-descanso: 210, 10%, 50%;
+  --pdf-border: 210, 10%, 80%;
+}
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  /* Floor utility classes */
+  .floor-p1 {
+    background-color: var(--color-floor-1-bg);
+    color: var(--color-floor-1-text);
+    border-color: var(--color-floor-1-border);
+  }
+  .floor-p2 {
+    background-color: var(--color-floor-2-bg);
+    color: var(--color-floor-2-text);
+    border-color: var(--color-floor-2-border);
+  }
+  .floor-p3 {
+    background-color: var(--color-floor-3-bg);
+    color: var(--color-floor-3-text);
+    border-color: var(--color-floor-3-border);
+  }
+
+  .score-high {
+    background-color: var(--color-score-high-bg);
+    color: var(--color-score-high-text);
+    border-color: var(--color-score-high-border);
+  }
+  .score-mid {
+    background-color: var(--color-score-mid-bg);
+    color: var(--color-score-mid-text);
+    border-color: var(--color-score-mid-border);
+  }
+  .score-low {
+    background-color: var(--color-score-low-bg);
+    color: var(--color-score-low-text);
+    border-color: var(--color-score-low-border);
+  }
+
+  /* Custom scrollbar — cleaner */
+  .custom-scrollbar::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-radius: 9999px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(127, 85, 40, 0.15);
+    border-radius: 9999px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(127, 85, 40, 0.3);
+  }
+}

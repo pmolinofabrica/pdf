@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=El Molino Calendario
+Comment=Arranca el Gestor PDF
+Exec=gnome-terminal -- /home/pablo/Documentos/viejos/pdf/Iniciar_El_Molino.sh
+Icon=utilities-terminal
+Terminal=false
+Categories=Utility;
