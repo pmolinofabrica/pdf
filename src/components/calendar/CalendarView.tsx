@@ -41,6 +41,9 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ selectedAgentId, sel
     if (label.includes('apertura')) {
       return ['bg-[hsl(var(--pdf-apertura-bg))] text-[hsl(var(--pdf-apertura-text))]', 'bg-[hsl(var(--pdf-apertura-bg))]/30 text-k-on-surface'];
     }
+    if (label.includes('capacitación') && label.includes('general')) {
+      return ['bg-[hsl(var(--pdf-general-bg))] text-white', 'bg-[hsl(var(--pdf-general-bg))]/30 text-k-on-surface'];
+    }
     if (label.includes('interna') || label.includes('capacitación')) {
       return ['bg-[hsl(var(--pdf-interna-bg))] text-[hsl(var(--pdf-interna-text))]', 'bg-[hsl(var(--pdf-interna-bg))]/30 text-k-on-surface'];
     }

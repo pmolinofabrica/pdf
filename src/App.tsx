@@ -26,9 +26,42 @@ function App() {
   // Set first agent as default when list loads
   useEffect(() => {
     if (agentes.length > 0 && !selectedAgentId) {
-      setSelectedAgentId(agentes[0].id_agente)
+      setSelectedAgentId(agentes[0].id_agente);
     }
-  }, [agentes, selectedAgentId])
+  }, [agentes, selectedAgentId]);
+
+  // Global Keyboard Shortcuts for switching residents natively
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore keystrokes when typing into editable inputs/textareas
+      const target = e.target as HTMLElement;
+      if (['INPUT', 'TEXTAREA'].includes(target.tagName) || target.isContentEditable) {
+        return;
+      }
+
+      if (activeTab === 'calendar' && agentes.length > 0) {
+        const currentIndex = agentes.findIndex(a => a.id_agente === selectedAgentId);
+        
+        // Q: Anterior
+        if (e.key.toLowerCase() === 'q') {
+          if (currentIndex > 0) {
+            setSelectedAgentId(agentes[currentIndex - 1].id_agente);
+          }
+        }
+        // W: Siguiente
+        if (e.key.toLowerCase() === 'w') {
+          if (currentIndex !== -1 && currentIndex < agentes.length - 1) {
+            setSelectedAgentId(agentes[currentIndex + 1].id_agente);
+          } else if (currentIndex === -1) {
+            setSelectedAgentId(agentes[0].id_agente);
+          }
+        }
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeTab, agentes, selectedAgentId]);
 
   if (isLoading || isLoadingAgentes) {
     return (
