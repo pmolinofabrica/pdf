@@ -38,8 +38,13 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ selectedAgentId, sel
   };  // Estilos de turnos actualizados: Jerarquía completa y compatible con HSL
   const getShiftStyles = (l: string) => {
     const label = l?.toLowerCase() || '';
+    const words = label.split(/\s+/).filter(Boolean);
     if (label.includes('apertura')) {
-      return ['bg-[hsl(var(--pdf-apertura-bg))] text-[hsl(var(--pdf-apertura-text))]', 'bg-[hsl(var(--pdf-apertura-bg))]/30 text-k-on-surface'];
+      const isB = words[words.length - 1] === 'b';
+      const scheduleClass = isB
+        ? 'bg-[hsl(var(--pdf-apertura-text))] text-[hsl(var(--pdf-apertura-bg))]'
+        : 'bg-[hsl(var(--pdf-apertura-bg))]/30 text-k-on-surface';
+      return ['bg-[hsl(var(--pdf-apertura-bg))] text-[hsl(var(--pdf-apertura-text))]', scheduleClass];
     }
     if (label.includes('capacitación') && label.includes('general')) {
       return ['bg-[hsl(var(--pdf-general-bg))] text-white', 'bg-[hsl(var(--pdf-general-bg))]/30 text-k-on-surface'];
@@ -129,7 +134,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ selectedAgentId, sel
             const body = container.children[1] as HTMLElement;
             
             if (header && body) {
-              const classStr = header.className || '';
+              const classStr = (header.className + ' ' + body.className) || '';
               Object.entries(bakedColors).forEach(([cssVar, colors]) => {
                 if (classStr.includes(cssVar)) {
                   header.style.backgroundColor = colors.solid;
@@ -320,6 +325,9 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ selectedAgentId, sel
 
                         const [labelClass, scheduleClass] = getShiftStyles(c.etiqueta);
                         const hasTime = c.hora_inicio && c.hora_fin && c.hora_inicio !== '00:00:00';
+                        const labelWords = (c.etiqueta || '').toLowerCase().split(/\s+/).filter(Boolean);
+                        const isAperturaB = (c.etiqueta || '').toLowerCase().includes('apertura') && labelWords[labelWords.length - 1] === 'b';
+                        const displayLabel = isAperturaB ? (c.etiqueta || '').replace(/\s*B\s*$/i, '').trim() : (c.etiqueta || 'S/D');
 
                         return (
                           <div 
@@ -328,7 +336,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ selectedAgentId, sel
                           >
                             <div className={`px-1 py-2 ${labelClass}`}>
                               <div className="font-headline font-black text-[24px] uppercase leading-tight tracking-tighter break-words" style={{ wordBreak: 'break-word' }}>
-                                {c.etiqueta || 'S/D'}
+                                {displayLabel}
                               </div>
                             </div>
                             <div 
