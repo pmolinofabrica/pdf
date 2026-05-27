@@ -134,17 +134,28 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ selectedAgentId, sel
             const body = container.children[1] as HTMLElement;
             
             if (header && body) {
-              const classStr = (header.className + ' ' + body.className) || '';
+              const headerClass = header.className || '';
               Object.entries(bakedColors).forEach(([cssVar, colors]) => {
-                if (classStr.includes(cssVar)) {
+                if (headerClass.includes(cssVar)) {
                   header.style.backgroundColor = colors.solid;
                   header.style.color = colors.text;
-                  body.style.backgroundColor = colors.light;
-                  body.style.color = '#1f2937';
-                  body.style.backgroundImage = 'none';
-                  body.style.borderTop = '1px solid rgba(0,0,0,0.1)';
                 }
               });
+
+              const bodyClass = body.className || '';
+              if (bodyClass.includes('--pdf-apertura-text')) {
+                body.style.backgroundColor = '#14532d';
+                body.style.color = '#86efac';
+              } else {
+                Object.entries(bakedColors).forEach(([cssVar, colors]) => {
+                  if (bodyClass.includes(cssVar)) {
+                    body.style.backgroundColor = colors.light;
+                    body.style.color = '#1f2937';
+                  }
+                });
+              }
+              body.style.backgroundImage = 'none';
+              body.style.borderTop = '1px solid rgba(0,0,0,0.1)';
             }
           });
 
@@ -248,11 +259,11 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ selectedAgentId, sel
       <div className="absolute bottom-20 -right-20 w-96 h-96 rounded-full bg-k-primary opacity-5 blur-3xl"></div>
 
       <div ref={pdfRef} className="max-w-[1440px] mx-auto px-8 relative z-10 bg-[#faf9f6]">
-        <div className="flex justify-between items-end mb-16 relative">
-          <h1 className="font-headline text-[80px] leading-none font-black tracking-tighter text-k-on-surface uppercase relative z-10">
+        <div className="flex justify-between items-end mb-16 relative gap-8">
+          <h1 className="font-headline text-[80px] leading-none font-black tracking-tighter text-k-on-surface uppercase relative z-10 shrink-0">
             {calendarData.monthName}
           </h1>
-          <h1 className="font-headline text-[80px] leading-none font-black tracking-tighter text-k-on-surface uppercase relative z-10 text-right">
+          <h1 className="font-headline text-[80px] leading-none font-black tracking-tighter text-k-on-surface uppercase relative z-10 text-right min-w-0">
             {residentName}
           </h1>
           
