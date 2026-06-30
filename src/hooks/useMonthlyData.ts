@@ -46,6 +46,21 @@ export const useMonthlyData = (selectedMonth: string, turnoFilter = 'manana') =>
 
   useEffect(() => {
     async function loadInitialData() {
+      if (!supabase) {
+        setDbDevices([]);
+        setAssignmentsDb({});
+        setActiveDates([]);
+        setConvocadosCountDb({});
+        setConvocadosDb({});
+        setAllResidentsDb([]);
+        setInasistenciasDb({});
+        setTipoOrganizacionMap({});
+        setCalendarDb({});
+        setVisitasByDate({});
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       const { yFilt, mmFilt, startOfMonth, endOfMonth } = getMonthParts();
 

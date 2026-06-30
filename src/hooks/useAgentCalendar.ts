@@ -21,6 +21,12 @@ export const useAgentCalendar = (agentId: number | null, selectedMonth: string) 
     }
 
     async function fetchCalendarData() {
+      if (!supabase) {
+        setConvocatorias([]);
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       
       // Parse selectedMonth (e.g., "Mayo 2026")

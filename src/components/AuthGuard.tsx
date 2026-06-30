@@ -7,11 +7,39 @@ interface AuthGuardProps {
 }
 
 export const AuthGuard: React.FC<AuthGuardProps> = ({ children, fallback }) => {
-  const { isAuthenticated, isLoading, signIn } = useAuth();
+  const { isAuthenticated, isLoading, signIn, configError } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  if (configError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-muted/30 p-6">
+        <div className="w-full max-w-lg bg-card p-8 rounded-2xl border border-border shadow-warm-lg space-y-4">
+          <div className="space-y-2">
+            <h1 className="text-2xl font-black text-foreground tracking-tight">Configura Supabase para iniciar</h1>
+            <p className="text-sm font-medium text-muted-foreground">
+              La app no puede conectarse porque faltan variables de entorno públicas de Vite.
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
+            {configError}
+          </div>
+
+          <div className="rounded-xl border border-border bg-background p-4 font-mono text-xs text-foreground">
+            <p>VITE_SUPABASE_URL=https://tu-proyecto.supabase.co</p>
+            <p>VITE_SUPABASE_ANON_KEY=tu-clave-anon</p>
+          </div>
+
+          <p className="text-xs font-medium text-muted-foreground">
+            Si tu archivo `.env` usa `SUPABASE_URL` o `SUPABASE_ANON_KEY` sin el prefijo `VITE_`, Vite no los expone al frontend.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

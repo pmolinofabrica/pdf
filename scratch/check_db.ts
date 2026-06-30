@@ -1,13 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
-import * as dotenv from 'dotenv'
-import { resolve } from 'path'
+import { readSupabaseEnv } from './supabase-env'
 
-dotenv.config({ path: resolve(process.cwd(), '.env') })
+const { url, anonKey } = readSupabaseEnv({ requireServiceRole: false })
 
-const supabase = createClient(
-  process.env.VITE_SUPABASE_URL || '',
-  process.env.VITE_SUPABASE_PUBLISHABLE_KEY || ''
-)
+const supabase = createClient(url, anonKey)
 
 async function checkTables() {
   // Query information_schema via RPC if available, or just try to list common tables

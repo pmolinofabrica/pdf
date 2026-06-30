@@ -4,17 +4,32 @@ import { CalendarView } from '@/components/calendar/CalendarView'
 import { useMonthlyData } from '@/hooks/useMonthlyData'
 import { useAgentes } from '@/hooks/useAgentes'
 import { AuthGuard } from '@/components/AuthGuard'
-import { Calendar as CalendarIcon, Clock, UserRound } from 'lucide-react'
+import { Calendar as CalendarIcon, Clock, UserRound, Shield, RotateCcw } from 'lucide-react'
+import { useRefuerzoAgentes } from '@/hooks/useRefuerzoAgentes'
+
+const MONTHS_ES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
+
+function getCurrentMonthString() {
+  const now = new Date()
+  return `${MONTHS_ES[now.getMonth()]} ${now.getFullYear()}`
+}
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'menu' | 'calendar'>('menu')
-  // Default to May 2026 (month posterior to current April)
-  const [selectedMonth, setSelectedMonth] = useState('Mayo 2026')
+  const [activeTab, setActiveTab] = useState<'menu' | 'calendar'>('calendar')
+  const [selectedMonth, setSelectedMonth] = useState(getCurrentMonthString)
   const [selectedTurno, setSelectedTurno] = useState('manana')
   const [selectedAgentId, setSelectedAgentId] = useState<number | null>(null)
+  const [refuerzoMode, setRefuerzoMode] = useState(false)
+  const [selectedRefuerzoAgentId, setSelectedRefuerzoAgentId] = useState<number | null>(null)
+  const [defectoLabelEnabled, setDefectoLabelEnabled] = useState(false)
+  const [defectoLabelText, setDefectoLabelText] = useState(() => {
+    const saved = localStorage.getItem('defecto_label_text');
+    return saved || 'Refuerzos - vacaciones de inverno';
+  })
   
   const { data, isLoading } = useMonthlyData(selectedMonth, selectedTurno)
   const { agentes, isLoading: isLoadingAgentes } = useAgentes()
+  const { agentes: refuerzoAgentes } = useRefuerzoAgentes()
 
   // Generate all months for 2026
   const months2026 = [
@@ -63,6 +78,10 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeTab, agentes, selectedAgentId]);
 
+  useEffect(() => {
+    localStorage.setItem('defecto_label_text', defectoLabelText);
+  }, [defectoLabelText]);
+
   if (isLoading || isLoadingAgentes) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
@@ -83,7 +102,7 @@ function App() {
                 <h2 className="text-2xl font-bold text-foreground">Sin Datos Disponibles</h2>
                 <p className="text-muted-foreground">No se encontraron asignaciones para la combinación seleccionada.</p>
                 <button 
-                  onClick={() => { setSelectedMonth('Mayo 2026'); setSelectedTurno('manana'); }}
+                  onClick={() => { setSelectedMonth(getCurrentMonthString()); setSelectedTurno('manana'); }}
                   className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-bold shadow-sm"
                 >
                   Restablecer
@@ -149,6 +168,24 @@ function App() {
                 </select>
               </div>
 
+              {refuerzoMode && (
+                <div className="flex items-center gap-2 bg-card/80 border border-k-secondary/40 rounded-xl px-3 py-1.5 shadow-warm-lg backdrop-blur-sm">
+                  <Shield className="w-3.5 h-3.5 text-k-secondary" />
+                  <select 
+                    value={selectedRefuerzoAgentId || ''} 
+                    onChange={(e) => setSelectedRefuerzoAgentId(Number(e.target.value))}
+                    className="bg-transparent text-xs font-bold outline-none cursor-pointer text-foreground min-w-[150px]"
+                  >
+                    <option value="">Sin refuerzo</option>
+                    {refuerzoAgentes.map(a => (
+                      <option key={a.id_agente} value={a.id_agente}>
+                        {a.nombre_completo}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               <div className="flex items-center gap-2 bg-card/80 border border-border rounded-xl px-3 py-1.5 shadow-warm-lg backdrop-blur-sm">
                 <CalendarIcon className="w-3.5 h-3.5 text-k-primary" />
                 <select 
@@ -164,27 +201,72 @@ function App() {
         </div>
 
         {/* Right Side: View Switcher */}
-        <div className="flex items-center p-1 bg-card/80 border border-border rounded-xl shadow-warm-lg backdrop-blur-sm pointer-events-auto">
-          <button
-            onClick={() => setActiveTab('menu')}
-            className={`px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-tighter transition-all ${
-              activeTab === 'menu' 
-                ? 'bg-primary text-primary-foreground shadow-sm' 
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Menú del día
-          </button>
-          <button
-            onClick={() => setActiveTab('calendar')}
-            className={`px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-tighter transition-all ${
-              activeTab === 'calendar' 
-                ? 'bg-k-primary text-k-on-primary shadow-sm font-headline' 
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Calendario
-          </button>
+        <div className="flex flex-col gap-2 pointer-events-auto">
+          <div className="flex items-center p-1 bg-card/80 border border-border rounded-xl shadow-warm-lg backdrop-blur-sm">
+            <button
+              onClick={() => setActiveTab('menu')}
+              className={`px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-tighter transition-all ${
+                activeTab === 'menu' 
+                  ? 'bg-primary text-primary-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Menú del día
+            </button>
+            <button
+              onClick={() => setActiveTab('calendar')}
+              className={`px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-tighter transition-all ${
+                activeTab === 'calendar' 
+                  ? 'bg-k-primary text-k-on-primary shadow-sm font-headline' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Calendario
+            </button>
+          </div>
+
+          {activeTab === 'calendar' && (
+            <>
+              <button
+                onClick={() => {
+                  setRefuerzoMode(!refuerzoMode);
+                  if (refuerzoMode) setSelectedRefuerzoAgentId(null);
+                }}
+                className={`flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-black uppercase tracking-tighter transition-all border shadow-warm-lg backdrop-blur-sm ${
+                  refuerzoMode 
+                    ? 'bg-k-secondary text-white border-k-secondary shadow-sm' 
+                    : 'bg-card/80 text-muted-foreground hover:text-foreground border-border'
+                }`}
+              >
+                <Shield className={`w-3.5 h-3.5 ${refuerzoMode ? 'text-white' : 'text-k-secondary'}`} />
+                Refuerzos
+              </button>
+
+              {refuerzoMode && (
+                <>
+                  <button
+                    onClick={() => setDefectoLabelEnabled(!defectoLabelEnabled)}
+                    className={`flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-black uppercase tracking-tighter transition-all border shadow-warm-lg backdrop-blur-sm ${
+                      defectoLabelEnabled
+                        ? 'bg-k-primary text-white border-k-primary shadow-sm' 
+                        : 'bg-card/80 text-muted-foreground hover:text-foreground border-border'
+                    }`}
+                  >
+                    <RotateCcw className={`w-3.5 h-3.5 ${defectoLabelEnabled ? 'text-white' : 'text-k-primary'}`} />
+                    Por defecto
+                  </button>
+
+                  <input
+                    type="text"
+                    value={defectoLabelText}
+                    onChange={(e) => setDefectoLabelText(e.target.value)}
+                    placeholder="Refuerzos - vacaciones de inverno"
+                    className="px-3 py-1.5 rounded-xl text-xs font-bold border border-border bg-card/80 shadow-warm-lg backdrop-blur-sm outline-none text-foreground"
+                  />
+                </>
+              )}
+            </>
+          )}
         </div>
       </div>
 
@@ -196,6 +278,9 @@ function App() {
           selectedAgentId={selectedAgentId} 
           selectedMonth={selectedMonth} 
           residentName={agentes.find(a => a.id_agente === selectedAgentId)?.nombre_completo || ''}
+          refuerzoMode={refuerzoMode}
+          selectedRefuerzoAgentId={selectedRefuerzoAgentId}
+          refuerzoResidentName={defectoLabelEnabled && defectoLabelText ? defectoLabelText : (refuerzoAgentes.find(a => a.id_agente === selectedRefuerzoAgentId)?.nombre_completo || '')}
         />
       )}
     </div>

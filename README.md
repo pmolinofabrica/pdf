@@ -1,38 +1,41 @@
-# El Molino - Gestor de Turnos & Exportador de PDF
+# El Molino - Gestor de Turnos y Exportador de PDF
 
-Software de interfaz desarrollado para administrar esquemas semanales/mensuales del personal y exportarlos con fiabilidad tipográfica matemática directamente a formato de diseño PDF de alta fidelidad.
+Interfaz para administrar esquemas semanales y mensuales del personal, con exportacion a PDF desde una SPA construida con React, Vite y TypeScript.
 
-## Requisitos Previos
+## Requisitos previos
 
-Dado que esta es una SPA (Single Page Application) moderna escrita en React + Vite + TypeScript, existen requisitos de servidor para el intérprete:
+1. Instalar [Node.js](https://nodejs.org/) version 20 o superior.
+2. Verificar que `npm` quede disponible en terminal.
 
-1. **Instalar Node.js:** Es mandatorio instalar [Node.js](https://nodejs.org/) (Versión 20+ es sugerida por estabilidad, LTS). 
-   - Durante la instalación, verificar que incluya el manejador de componentes **npm**.
+## Instalacion y credenciales
 
-## Instalación y Credenciales
-
-1. **Clonar e instalar recursos:**
-   Abre una terminal normal o de VSCode dentro de la carpeta:
+1. Instalar dependencias:
    ```bash
    npm install
    ```
-2. **Inyección de Identidad Segura (.env):**
-   Las credenciales de acceso a la base de datos de Supabase **no viajan** a este repositorio por protocolo de seguridad.
-   Una vez en la nueva PC, necesitas crear tú mismo en la raíz de la carpeta (junto al `package.json`) un archivo llamado literalmente `.env` y pegarle exactamente las 2 líneas originales que tenías guardadas en tu otra computadora central, con el formato vital:
+2. Crear un archivo `.env` en la raiz del proyecto.
+3. Copiar la plantilla de `.env.example` y completar estas variables:
    ```env
-   VITE_SUPABASE_URL=el_link_de_tu_URL
-   VITE_SUPABASE_ANON_KEY=las_contraseñas_alfa_numéricas
+   VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+   VITE_SUPABASE_ANON_KEY=tu_clave_anon
    ```
 
-## Forma de Uso
+Si usas los scripts de `scratch/` para auditoria o depuracion, agrega tambien:
 
-**Arranque Rápido para Operarios Diarios (Linux):**
-Si estás usando entorno Linux, hay un acceso directo ya prefabricado. Simplemente haz doble clic al archivo `El_Molino.desktop` ubicado en tu carpeta raíz y pulsa "Confiar y Ejecutar" en el mensaje del sistema. Eso subirá el servidor.
+```env
+SUPABASE_SERVICE_ROLE_KEY=tu_service_role_key
+```
 
-**Arranque Genérico por Terminal:**
-Si prefieres consola, o estás en otra PC/Mac/Windows:
+La `service role key` nunca debe quedar dentro de `src/` ni usar prefijo `VITE_`.
+
+## Uso
+
+Para desarrollo local:
+
 ```bash
 npm run dev
 ```
 
-La app encenderá en `http://localhost:5173/`. Selecciona tu usuario y haz click a "Generar PDF".
+La app queda disponible en `http://localhost:5173/`.
+
+En Linux tambien puedes usar el lanzador `El_Molino.desktop`.

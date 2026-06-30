@@ -36,6 +36,11 @@ export const VisitBlock: React.FC<VisitBadgeProps> = ({ visitas, compact = false
   if (visitas.length === 0) return null;
 
   const handleGroupToggle = async (id_asignacion: number, currentGroups: number[] | null, toggleGroup: number) => {
+    if (!supabase) {
+      console.error('Supabase no esta configurado.');
+      return;
+    }
+
     const current = currentGroups || [];
     let newGroups: number[];
     if (current.includes(toggleGroup)) {

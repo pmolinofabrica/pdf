@@ -1,9 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
+import { readSupabaseEnv } from './supabase-env'
 
-const SUPABASE_URL = 'https://zgzqeusbpobrwanvktyz.supabase.co'
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpnenFldXNicG9icndhbnZrdHl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxNDg2OTksImV4cCI6MjA4MTcyNDY5OX0.F5KRxRDsKT88mAIwFwBXJLaldt8l0lDCT-vs80aCZ40'
+const { url, anonKey } = readSupabaseEnv({ requireServiceRole: false })
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+const supabase = createClient(url, anonKey)
 
 async function audit() {
   console.log('--- Database Audit ---')

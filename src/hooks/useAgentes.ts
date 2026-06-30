@@ -14,6 +14,12 @@ export const useAgentes = () => {
 
   useEffect(() => {
     async function fetchAgentes() {
+      if (!supabase) {
+        setAgentes([]);
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       const { data, error } = await supabase
         .from('datos_personales')

@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { useAgentCalendar } from '@/hooks/useAgentCalendar';
-import { Plus, Trash2, Download, Loader2 } from 'lucide-react';
+import { useRefuerzoCalendar } from '@/hooks/useRefuerzoCalendar';
+import { Plus, Trash2, Download, Loader2, Shield } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { LOGO_BASE64 } from '../../assets/logo';
@@ -9,12 +10,21 @@ interface CalendarViewProps {
   selectedAgentId: number | null;
   selectedMonth: string;
   residentName: string;
+  refuerzoMode?: boolean;
+  selectedRefuerzoAgentId?: number | null;
+  refuerzoResidentName?: string;
 }
 
 const DEFAULT_COMMENT = "Para comunicarte con El Molino, Fábrica Cultural enviá un correo a <strong>elmolino.residencias@gmail.com</strong>";
 
-export const CalendarView: React.FC<CalendarViewProps> = ({ selectedAgentId, selectedMonth, residentName }) => {
-  const { convocatorias, isLoading } = useAgentCalendar(selectedAgentId, selectedMonth);
+export const CalendarView: React.FC<CalendarViewProps> = ({ selectedAgentId, selectedMonth, residentName, refuerzoMode = false, selectedRefuerzoAgentId = null, refuerzoResidentName = '' }) => {
+  const { convocatorias: regularConvocatorias, isLoading: isLoadingRegular } = useAgentCalendar(refuerzoMode ? null : selectedAgentId, selectedMonth);
+  const { convocatorias: refuerzoConvocatorias, isLoading: isLoadingRefuerzo } = useRefuerzoCalendar(refuerzoMode ? selectedRefuerzoAgentId : null, selectedMonth);
+  
+  const convocatorias = refuerzoMode ? refuerzoConvocatorias : regularConvocatorias;
+  const isLoading = refuerzoMode ? isLoadingRefuerzo : isLoadingRegular;
+  const displayName = refuerzoMode && refuerzoResidentName ? refuerzoResidentName : residentName;
+
   const [isExporting, setIsExporting] = useState(false);
   const pdfRef = useRef<HTMLDivElement>(null);
   
@@ -208,7 +218,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ selectedAgentId, sel
 
       pdf.addImage(imgData, 'PNG', xOffset, topOffset, imgWidth, imgHeight, undefined, 'FAST');
       
-      const cleanName = residentName.trim().replace(/\s+/g, '_') || 'Residente';
+      const cleanName = displayName.trim().replace(/\s+/g, '_') || 'Residente';
       const cleanMonth = selectedMonth.replace(/\s+/g, '_');
       pdf.save(`${cleanName}_${cleanMonth}.pdf`);
 
@@ -259,12 +269,12 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ selectedAgentId, sel
       <div className="absolute bottom-20 -right-20 w-96 h-96 rounded-full bg-k-primary opacity-5 blur-3xl"></div>
 
       <div ref={pdfRef} className="max-w-[1440px] mx-auto px-8 relative z-10 bg-[#faf9f6]">
-        <div className="flex justify-between items-end mb-16 relative gap-8">
+        <div className="flex justify-between items-end mb-16 relative gap-16">
           <h1 className="font-headline text-[80px] leading-none font-black tracking-tighter text-k-on-surface uppercase relative z-10 shrink-0">
             {calendarData.monthName}
           </h1>
           <h1 className="font-headline text-[80px] leading-none font-black tracking-tighter text-k-on-surface uppercase relative z-10 text-right min-w-0">
-            {residentName}
+            {displayName}
           </h1>
           
           <div className="absolute -top-16 right-0 z-50">
@@ -431,9 +441,13 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ selectedAgentId, sel
         </div>
 
         {/* High Contrast Schedule Strip (Contexto) */}
-        {!isLoading && convocatorias.length === 0 && selectedAgentId && (
+        {!isLoading && convocatorias.length === 0 && (refuerzoMode ? selectedRefuerzoAgentId : selectedAgentId) && (
           <div className="mt-12 p-8 bg-k-surface-container-low border-l-4 border-k-secondary font-body">
-            <p className="text-k-on-surface-variant font-medium">No hay convocatorias registradas para este residente en {calendarData.monthName}.</p>
+            <p className="text-k-on-surface-variant font-medium">
+              {refuerzoMode
+                ? `No hay convocatorias de refuerzo registradas para ${displayName} en ${calendarData.monthName}.`
+                : `No hay convocatorias registradas para este residente en ${calendarData.monthName}.`}
+            </p>
           </div>
         )}
       </div>

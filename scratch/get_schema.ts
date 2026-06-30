@@ -1,12 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
+import { readSupabaseEnv } from './supabase-env'
 
-const SUPABASE_URL = 'https://zgzqeusbpobrwanvktyz.supabase.co'
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpnenFldXNicG9icndhbnZrdHl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxNDg2OTksImV4cCI6MjA4MTcyNDY5OX0.F5KRxRDsKT88mAIwFwBXJLaldt8l0lDCT-vs80aCZ40'
+const { url, serviceRoleKey } = readSupabaseEnv({ requireServiceRole: true })
 
-// We need the service role key to query information_schema or perform administrative tasks
-const SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpnenFldXNicG9icndhbnZrdHl6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjE0ODY5OSwiZXhwIjoyMDgxNzI0Njk5fQ.nekEcuPqHs4VnJDrvZ_Z9SMGTJY6dRQofyxqcwGnBI8'
-
-const supabase = createClient(SUPABASE_URL, SERVICE_KEY)
+const supabase = createClient(url, serviceRoleKey!)
 
 async function getColumns() {
   const tables = ['convocatoria', 'planificacion', 'dias', 'turnos']
